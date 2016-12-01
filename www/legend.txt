@@ -1,0 +1,75 @@
+// On smaller screens the labels may overlap, but for the legend we want them drawn regardless
+ShowLabelsBelow = 0
+
+type,             x,     z,    description,          owner,  href,                  iconIndex
+
+"Village",        -4800, -4800, "0) Plains/savannah Village"
+DesertVillage,    -4800, -4000, "1) Desert Village"
+Label,            -4800, -3200, "2) Skull", "", "", 2
+WitchHut,         -4800, -2400, "3) WitchHut"
+JungleTemple,     -4800, -1600, "4) JungleTemple"
+DesertTemple,     -4800,  -800, "5) DesertTemple"
+NetherFortress,   -4800,     0, "6) NetherFortress"
+NetherPortal,     -4800,   800, "7) NetherPortal"
+
+PlayerStructure,  -2400, -4800, "8) PlayerStructure"                        
+PlayerCastle,     -2400, -4000, "9) PlayerCastle"
+PlayerHouse,      -2400, -3200, "10) PlayerHouse"
+PlayerStructure,  -2400, -2400, "11) Railway structure", "", "", 11
+PlayerMachine,    -2400, -1600, "12) PlayerMachine"
+FenceOverlay,     -2400,  -800, "13) Fence overlay"
+PlayerFarm,       -2400,     0, "14) PlayerFarm (wheat)"
+PlayerFarm,       -2400,   800, "15) Chicken", , , 15
+PlayerFarm,       -2400,  1600, "16) Pig",,,16
+PlayerFarm,       -2400,  2400, "17) Cow",,,17
+PlayerFarm,       -2400,  3200, "18) Sheep",,,18
+Label,            -2400,  4000, "19) Pumpkin",,,19
+
+PlayerStructure,      0, -4800, "20) Monument (Sarsen stones)", "", "", 20
+PlayerStructure,      0, -4000, "21) Monument (Obelisk)", "", "", 21
+PlayerStructure,      0, -3200, "22) Monument (Maoi)", "", "", 22
+Forest,               0, -2400, "23) Forest 1 (Oak)", "", "", 23
+Forest,               0, -1600, "24) Forest 2 (Sapling)", "", "", 24
+Forest,               0,  -800, "25) Forest 3 (Pirate palms)", "", "", 25
+FlowerForest,         0,   800, "26) Forest 4 (flower forest)"
+Forest,               0,  1600, "27) Forest 5 (dark)", "", "", 27
+Forest,               0,  2400, "28) Forest 6 (default)"            
+MushroomIsland,       0,  3200, "29) MushroomIsland,\nor savannah/acacia Trees",
+IslandOverlay,        0,  4000, "30) Island overlay"
+IcePlainsSpikes,      0,  4800, "47) Ice plains spikes"
+
+Label,             2400, -4800, "31) Mountains 1", "", "", 31
+Label,             2400, -4000, "32) Mountains 2", "", "", 32
+Label,             2400, -3200, "33) Cave", "", "", 33
+Horse,             2400, -2400, "34) Horse"
+Wolf,              2400, -1600, "35) Wolf"
+Dragon,            2400,  -800, "36) Dragon"
+SeaMonster,        2400,     0, "46) SeaMonster"
+Label,             2400,   800, "37) Ship 1", "", "", 37
+Label,             2400,  1600, "38) Ship 2", "", "", 38
+Label,             2400,  2400, "39) Compass rose", "", "", 39
+Spawn,             2400,  3200, "40) Spawn"
+Label,             2400,  4000, "41) Marker 2", "", "", 41
+Label,             2400,  4800, "42) Marker 3", "", "", 42
+
+Label,             4800, -4800, "43) Chest", "", "", 43
+EnchantingRoom,    4800, -4000, "44) EnchantingRoom"
+Label,             4800, -3200, "45) Anvil",,,45
+
+
+MushroomIsland,    4800,  4000
+IslandOverlay,     4800,  4000, "Example overlay"
+
+// If draw order matters for your overlay (e.g. pig needs to be behind fence), then list the 
+// intended top-most icon first, and place the caption on whichever icon extends the lowest 
+// (normally the overlay icon draws the lowest), e.g:
+FenceOverlay,      4800,  4800, "Example overlay"
+PlayerFarm,        4800,  4800,,,, 16
+
+
+
+Title = "Legend"
+Blurb = "Shows all icons, with icon number."
+LabelsLevel = 0
+Range = 6400
+

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<!-- 
+  index_local.html loads non-minified javascript files, and doesn't rely on the online (cached) versions of jquery etc.
+  (fonts will still fail though unless you're online)  
+-->
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+
+<link rel="apple-touch-icon-precomposed" href="img/apple-touch-icon-precomposed.png"><!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+<link rel="apple-touch-icon-precomposed" sizes="72x72"   href="img/apple-touch-icon-72x72-precomposed.png"><!-- For the iPad mini and the first- and second-generation iPad on iOS ≤ 6: -->
+<link rel="apple-touch-icon-precomposed" sizes="76x76"   href="img/apple-touch-icon-76x76-precomposed.png"><!-- For the iPad mini and the first- and second-generation iPad on iOS ≥ 7: -->
+<link rel="apple-touch-icon-precomposed" sizes="120x120" href="img/apple-touch-icon-120x120-precomposed.png"><!-- For iPhone with high-resolution Retina display running iOS ≥ 7: -->
+<link rel="apple-touch-icon-precomposed" sizes="152x152" href="img/apple-touch-icon-152x152-precomposed.png"><!-- For iPad with high-resolution Retina display running iOS ≥ 7: -->
+<link rel="icon" sizes="196x196" href="img/apple-touch-icon.png"><!-- Chrome v31+ for Android -->
+<link rel="icon" sizes="16x16" type="image/png" href="img/favicon.png" />
+
+<title>Map of the Overworld</title>
+<!--[if IE]>
+	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+<script src="js/head.min.js"></script>
+<script type="text/javascript">
+head.js(
+   {jquery:            "js/jquery-1.11.0.min.js"},
+   {jquery_ui:         "js/jquery-ui-1.10.4.min.js"},
+   {jquery_mousewheel: "js/jquery.mousewheel-3.1.9.min.js"},
+   {jquery_hammer:     "js/jquery.hammer.min-unknown.js"},  // I must be missing something, the official jquery.hammer versions don't work, but this one from http://solinitiative.com/demo/jquery.hammer.min.js does???
+   {jquery_touchpunch: "js/jquery.ui.touch-punch.min.js"},
+   {csv:               "js/csv.js"},
+   {jquery_mapz:       "js/jquery.mapz.js"},   
+   {stackblur:         "js/StackBlur.js"},
+   {minecraftmap:      "js/minecraftmap.js"}
+);
+</script>
+
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Calligraffitti">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Merienda">
+<link rel="stylesheet" type="text/css" href="style.css">
+
+</head>
+<body style="background-image:url('img/superflat.png'); background-size: cover; background-repeat: no-repeat; font-family: sans-serif;">
+
+<center>
+<h1 id="mainTitle">Map of the Overworld</h1>
+
+<p id="tagline">Use up/down or mousewheel to zoom, drag to scroll</p>
+</center>
+
+<div style="position: absolute; left: 50%;">
+	<div id="loading" style="position:relative; top: 50px; left: -50%; text-align: center; z-index: 40">
+		<img src="img/clock_10ms.gif" width="64" height="64" style="image-rendering:-moz-crisp-edges; image-rendering: -o-crisp-edges; image-rendering:-webkit-optimize-contrast; -ms-interpolation-mode:nearest-neighbor;" /><br/>
+		<i><b>Mining locations...</b></i>
+	</div>
+	
+	<div id="sunsetsign" class="sunsign hidden-sunsign" style="top: 352px; width: 192px; right: 410px">
+		<img src="img/sunsetsign.png" width="192" height="96" />
+	</div>
+	<div id="sunrisesign" class="sunsign hidden-sunsign" style="top: 352px; width: 192px; left: 410px">
+		<img src="img/sunrisesign.png" width="192" height="96"/>
+	</div>
+</div>
+<div style="position: absolute; left: 50%;">
+	<div id="hoverFrame" class="hidden-hoverFrame" style="position:relative; top: -20px; left: -50%; text-align: center; z-index: 30; pointer-events:none;">
+		<div id="locationDesc"></div>
+	</div>
+</div>
+
+<main>
+	<div class="map-viewport large-viewport">
+	  <div id="map-1">
+		<div id="zoomlevel1" class="current-level level" ></div>
+		<div id="zoomlevel2" class="level" ></div>
+		<div id="zoomlevel3" class="level" ></div>
+		<div id="zoomlevel4" class="level" ></div>
+	  </div>
+	</div>
+</main>
+<div id="signsunderneith" class="hidden-sunsign" width="100%">
+	<img src="img/sunsetsign_arrow.png" width="192" height="96" align="left"/>
+	<img src="img/sunrisesign_arrow.png" width="192" height="96" align="right"/>
+</div>
+		
+<div class="printicon" style="position:absolute; bottom: 2px; left: 3px;">
+	<!-- If you don't want this print icon to be shown on the map page, find the line:
+	       $('#poster-print-href').show();
+		 in the javascript code in this page, and comment it out -->
+	<a id="poster-print-href" style="display: none;" href="poster_print.html" alt="Generate printable poster image">&#9113;</a>
+</div>		
+<div class="credittext" style="position:absolute; bottom: 5px; right: 5px;">
+	<!-- Take advantage of this tiny text to include the fonts in the document 
+		 so that $(document).ready() isn't triggered before they are loaded. -->
+	<a href="http://buildwithblocks.info">create your own Ink &amp; Parchment Map</a>	
+</div>
+<div class="resources" style="position: absolute; visibility: hidden;">
+	<img id="map-background" src="img/map64.png"/>
+	<img id="map-tileset" src="img/glyphs.png"/>
+</div>
+
+<script type="text/javascript">
+head.ready(
+	function() {
+		// head.js has loaded all the javascript scrips
+		
+		// Update the poster-print URL to include all the arguments that were provided to this URL
+		$('#poster-print-href').attr('href','poster_print.html' + location.search);
+		
+		// If you don't want the print icon to be shown on the map page, comment out the following line:
+		$('#poster-print-href').show();
+	
+		$(window).load(
+			function() {
+				// All DOM and images and CSS etc has been loaded
+	
+				// Everything has loaded, which means the background image is loaded. Update
+				// the background colour so that screens taller than the background texture
+				// are still the right colour at the bottom.
+				$('body').css({ 'background-color': 'rgb(77,100,47)' }); // superflat.png background colour
+						
+				// =================
+				// This line lets you set the URL where this page will try to load the locations file
+				// from if no 'src=' parameter is specified.
+				// i.e. if you wish to specify a src URL in this html file instead of as a ?src= parameter 
+				// then uncomment the SetDefaultSrc() line below:
+				// =================				
+				// SetDefaultSrc('default.txt');
+							
+				getSettingsAndMapLocations(
+					head.screen.width,
+					head.screen.height,
+					function(config, locations) {
+
+						// Choose the size of the viewport and zoom resolutions based [very roughly] 
+						// on the display size of the device.
+						if (head.screen.height < 640 || head.screen.width < 640) {
+							$('.map-viewport').removeClass('large-viewport');
+							$('.map-viewport').addClass('tiny-viewport');
+							createMapsInDivs_Async(
+								config, 
+								locations,
+								[
+									{divName: "zoomlevel1", width:  390, height:  390},
+									{divName: "zoomlevel2", width:  708, height:  708},
+									{divName: "zoomlevel3", width: 1253, height: 1253},
+									{divName: "zoomlevel4", width: 2236, height: 2236}   // 2236 x 2236 is the largest img ipad hardware can handle (5 megapixels)
+								],
+								finishedRendering
+							);
+					
+						} else if (head.screen.height < 800 || head.screen.width < 800) {
+							$('.map-viewport').removeClass('large-viewport');
+							$('.map-viewport').addClass('small-viewport');
+							createMapsInDivs_Async(
+								config, 
+								locations,
+								[
+									{divName: "zoomlevel1", width:  630, height:  630},
+									{divName: "zoomlevel2", width:  960, height:  960},
+									{divName: "zoomlevel3", width: 1440, height: 1440},
+									{divName: "zoomlevel4", width: 2236, height: 2236}   // 2236 x 2236 is the largest img ipad hardware can handle (5 megapixels)
+								],
+								finishedRendering
+							);
+							
+						} else {
+							createMapsInDivs_Async(
+								config, 
+								locations,
+								[
+									{divName: "zoomlevel1", width:  800, height:  800},
+									{divName: "zoomlevel2", width: 1200, height: 1200},
+									{divName: "zoomlevel3", width: 1800, height: 1800},
+									{divName: "zoomlevel4", width: 2700, height: 2700}
+								],
+								finishedRendering
+							);
+						}
+
+						function finishedRendering() {
+						
+							$("#map-1").mapz({
+								zoom       : true,
+								mousewheel : true,
+								pinchzoom  : true,
+								createmaps : false
+							});
+									
+							// hide the loading screen
+							$('#loading').hide();
+							if (head.screen.width >= 1000) {
+								// we only show the sunrise/sunset signs if they can fit on the screen.
+								$('.sunsign').removeClass('hidden-sunsign');
+							} else {
+								// show the signs underneath the map instead
+								$('#signsunderneith').removeClass('hidden-sunsign');
+							}
+						}
+					}
+				);
+			}
+		);
+	}
+);
+</script>
+</body>
+</html>

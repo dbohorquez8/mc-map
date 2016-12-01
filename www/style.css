@@ -1,0 +1,50 @@
+.map-viewport{ position:relative; border:0px solid black; overflow:hidden; margin-left: auto; margin-right: auto }
+.tiny-viewport{ width:390px; height:390px; }
+.small-viewport{ width:630px; height:630px; }
+.large-viewport{ width:800px; height:800px; }
+.level{ position:absolute; left:0; top:0; z-index:10; visibility: hidden}
+.current-level{ z-index:20; visibility: visible }
+.mouse-passthrough { pointer-events: none }
+
+#map-1{ position:absolute; left:0; top:0; }
+img{ border:0; }
+
+.block{ float:center; margin-right:2%; margin-top:10px; }
+.sunsign { position:absolute; }
+.hidden-sunsign { visibility: hidden; } 
+#sunsetsign, #sunrisesign, #signsunderneith  { z-index: 5; }
+
+.credittext { 
+	font-family: 'Merienda', sans-serif; 
+	font-size: 11px;
+	color: #BBBBBB;
+	z-index: 1;
+}
+.credittext a {
+  text-decoration: none;
+  color: #BBBBBB;
+}
+.credittext a:hover, .credittext a:focus {text-decoration: underline; color: white;}
+
+.printicon, .printicon a {color: #BBBBBB; text-decoration: none; font-size: 18px}
+.printicon a:hover, .printicon a:focus {color: white; text-decoration: none;}
+
+/* h1 { font-family: 'Press Start 2P', sans-serif; } */
+.hidden-hoverFrame { visibility: hidden; } 
+.locationHoverPlacename { font-family: 'Merienda', sans-serif; font-weight: bold; color: #5e4820; }
+.locationHoverOwner { font-family: 'Calligraffitti', sans-serif; font-weight: bold; color: #550000 }
+.locationHoverCoordinates { font-family: 'Merienda', sans-serif; font-size: 70%; color: #5e4820; }
+
+#locationDesc {
+  width: 250px;
+  padding: 4px 0px 6px 0px;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 22px 25px 22px 20px;
+
+  border-image-width: 22 25 22 20;
+  border-image:        url("img/scrollborder.png") 22 25 22 20 fill stretch;  
+  -moz-border-image:   url("img/scrollborder.png") 22 25 22 20 fill stretch; /* Old firefox */
+  -webkit-border-image:url("img/scrollborder.png") 22 25 22 20 fill stretch; /* Safari */
+  -o-border-image:     url("img/scrollborder.png") 22 25 22 20 fill stretch; /* Opera */
+}
