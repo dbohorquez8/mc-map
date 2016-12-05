@@ -1,5 +1,9 @@
 module.exports = {
   root: true,
+  globals: {
+    window: true,
+    document: true,
+  },
   parser: 'babel-eslint',
   parserOptions: {
     sourceType: 'module'
@@ -19,6 +23,9 @@ module.exports = {
   },
   // add your custom rules here
   'rules': {
+    "no-console": ['error', {
+      "allow": ["warn", "error"],
+    }],
     // don't require .vue extension when importing
     'import/extensions': ['error', 'always', {
       'js': 'never',

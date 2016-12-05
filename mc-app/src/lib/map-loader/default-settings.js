@@ -1,0 +1,37 @@
+export default {
+  hideLabelsAbove: 0,
+  showLabelsBelow: 3,
+  mapRange: 3200,
+  title: 'Map of the Overworld',
+  blurb: 'Use up/down or mousewheel to zoom, drag to scroll',
+  customIconsUri: '',
+  x: 0,
+  z: 0,
+  showOrigin: true,
+  showScale: true,
+  showCoordinates: false,
+  disableCoordinates: false,
+  oceanTheme: 'BlueCoastline',
+  hardCoastlines: false,
+  oceanMapUri: 'ocean_map.png',
+  sizeScreenAndZoom: {
+    small: [
+      { divName: 'zoomlevel1', width: 390, height: 390 },
+      { divName: 'zoomlevel2', width: 708, height: 708 },
+      { divName: 'zoomlevel3', width: 1253, height: 1253 },
+      { divName: 'zoomlevel4', width: 2236, height: 2236 },
+    ],
+    medium: [
+      { divName: 'zoomlevel1', width: 630, height: 630 },
+      { divName: 'zoomlevel2', width: 960, height: 960 },
+      { divName: 'zoomlevel3', width: 1440, height: 1440 },
+      { divName: 'zoomlevel4', width: 2236, height: 2236 },
+    ],
+    large: [
+      { divName: 'zoomlevel1', width: 800, height: 800 },
+      { divName: 'zoomlevel2', width: 1200, height: 1200 },
+      { divName: 'zoomlevel3', width: 1800, height: 1800 },
+      { divName: 'zoomlevel4', width: 2700, height: 2700 },
+    ],
+  },
+};

@@ -2,6 +2,7 @@ import firebase from 'firebase';
 import axios from 'axios';
 import { trim, is } from 'ramda';
 import fbLocation from './fb-location';
+import SuppressableLabel from './map-loader/suppressable-lable';
 
 export default {
   perform() {
@@ -15,17 +16,59 @@ export default {
 
     firebase.initializeApp(config);
     fbLocation.init(firebase.database());
-    fbLocation.list().then((d) => {
-      console.log(d);
-    });
   },
 
-  oldImplementation() {
-    axios.get('/static/data.txt').then((response) => {
-      const data = response.data;
-      this.parseTextLocations(data, (r) => {
-        console.log(r);
+/*
+  oldCallBack(configFromAjax, locationsFromAjax) {
+    const screenHeight = size.height;
+    const screenWidth = size.width;
+    const mapConfig = new MapConfiguration();
+    mapConfig.setDefaults(screenWidth, screenHeight);
+    mapConfig.assignFrom(configFromAjax);
+    // mapConfig.assignFrom(configFromUrl);
+
+    // ApplyMapConfiguration(mapConfig);
+
+    /*
+    const deferreds = [];
+    const loadCustomIconsDeferredObj = $.Deferred();
+    deferreds[0] = loadCustomIconsDeferredObj;
+
+
+    if (!isEmpty(mapConfig.customIconsUri)) {
+      $(gCustomIcons).bind({
+        load(){
+          gCustomIconsLoaded = true;
+          loadCustomIconsDeferredObj.resolve();
+        },
+        error() {
+          // Image didn't load, probably a 404
+          loadCustomIconsDeferredObj.resolve();
+        }
       });
+      gCustomIcons.src = mapConfig.customIconsUri;
+
+    } else {
+      loadCustomIconsDeferredObj.resolve();
+    }
+
+    if (loadingOceanMap_deferredObj == null) {
+      loadingOceanMap_deferredObj = loadOceanMap_Async(mapConfig, true);
+    }
+    if (loadingOceanMap_deferredObj != null) {
+      deferreds[1] = loadingOceanMap_deferredObj;
+    }
+
+    $.when.apply($,deferreds).done(
+      () => { callback(mapConfig, locationsFromAjax); }
+    );
+  },
+*/
+
+  oldImplementation(callback) {
+    return axios.get('/static/data.txt').then((response) => {
+      const data = response.data;
+      this.parseTextLocations(data, callback);
     });
   },
 
@@ -34,7 +77,6 @@ export default {
     const locationList = [];
 
     const lines = data.split('\n');
-    console.log(lines.length);
     let i = 0;
     for (i = 0; i < lines.length; i += 1) {
       const line = lines[i];
@@ -87,22 +129,10 @@ export default {
     this.x = x;
     this.z = z;
     this.type = type;
-    this.labelOverride = this.suppressableLabel.parse(description);
+    this.labelOverride = SuppressableLabel.parse(description);
     this.hrefOverride = href;
     this.iconIndexOverride = iconIndex;
-    this.owner = this.suppressableLabel.parse(owner);
-  },
-
-  suppressableLabel(text, labellingStyleOverride) {
-    this.text = text;
-
-    if (labellingStyleOverride === undefined) {
-      this.displayOverride = this.labellingStyleOverride.normal;
-    } else {
-      this.displayOverride = labellingStyleOverride;
-    }
-    this.suppress = this.displayOverride === this.labellingStyleOverride.suppress;
-    this.always = this.displayOverride === this.labellingStyleOverride.always;
+    this.owner = SuppressableLabel.parse(owner);
   },
 
   assignFromRow(rowString) {
@@ -203,11 +233,6 @@ export default {
     return result;
   },
 
-  labellingStyleOverride: {
-    normal: 0,
-    suppress: 1,
-    always: 2,
-  },
 
   stringToBool(value) {
     switch (trim(value).toLowerCase()) {

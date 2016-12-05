@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <center>
-      <h1 id="mainTitle">Map of the Overworld</h1>
-      <p id="tagline">Use up/down or mousewheel to zoom, drag to scroll</p>
+      <h1 id="mainTitle">{{ mapSettings.title }}</h1>
+      <p id="tagline">{{ mapSettings.blurb }}</p>
     </center>
 
     <div style="position: absolute; left: 50%;">
@@ -26,14 +26,7 @@
     </div>
 
     <main>
-      <div class="map-viewport large-viewport">
-        <div id="map-1">
-          <div id="zoomlevel1" class="current-level level" ></div>
-          <div id="zoomlevel2" class="level" ></div>
-          <div id="zoomlevel3" class="level" ></div>
-          <div id="zoomlevel4" class="level" ></div>
-        </div>
-      </div>
+      <MinecraftMap :locations="locations" :map-settings="mapSettings" />
     </main>
 
     <div id="signsunderneith" class="hidden-sunsign" width="100%">
@@ -62,16 +55,20 @@
 </template>
 
 <script>
-import Hello from './components/Hello';
+import MinecraftMap from './components/MinecraftMap';
 import mapLoader from './lib/map-loader';
+import mapSettings from './lib/map-loader/default-settings';
 
 export default {
   name: 'app',
+  data: () => ({ locations: [], mapSettings }),
   components: {
-    Hello,
+    MinecraftMap,
   },
   created() {
-    mapLoader.oldImplementation();
+    mapLoader.oldImplementation((error, locations) => {
+      this.locations = locations;
+    });
   },
 };
 </script>
